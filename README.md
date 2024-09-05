@@ -22,6 +22,15 @@ Baekjoon 문제 풀이를 통한 solved.ac 순위 상승을 위한 개인 Repo�
 - `lib`: 의존성 관리 폴더
 - `bin`: 컴파일된 출력 파일 폴더 (기본 설정)
 
+## 백준 제출 코드 템플릿
+```java
+public class Main {
+    public static void main(String[] args) throws Exception {
+
+    }
+}
+```
+
 ## 유용한 링크
 - [Baekjoon Online Judge](https://www.acmicpc.net/)
 - [solved.ac](https://solved.ac/)
