@@ -1,7 +1,7 @@
 import java.io.*;
 
 // ASCII a : 97, z : 122
-public class App {
+public class boj1919 {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter pw = new PrintWriter(System.out);
