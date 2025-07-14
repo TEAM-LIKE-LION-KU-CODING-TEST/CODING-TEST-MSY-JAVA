@@ -1,15 +1,13 @@
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "jdk",
-            "request": "launch",
-            "name": "Launch Java App"
-        }
-    ]
-}
-
-/*
+// {
+//     "version": "0.2.0",
+//     "configurations": [
+//         {
+//             "type": "jdk",
+//             "request": "launch",
+//             "name": "Launch Java App"
+//         }
+//     ]
+// }
 {
     "version": "0.2.0",
     "configurations": [
@@ -23,4 +21,3 @@
         }
     ]
 }
-*/
