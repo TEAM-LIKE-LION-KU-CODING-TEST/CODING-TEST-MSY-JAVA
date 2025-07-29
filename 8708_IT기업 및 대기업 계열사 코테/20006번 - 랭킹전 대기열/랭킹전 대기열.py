@@ -42,7 +42,7 @@ def main():
             write("Waiting!\n")
 
         cur_room_list = rooms[key]
-        sorted(cur_room_list, key = lambda x:(x[1]))
+        cur_room_list = sorted(cur_room_list, key = lambda x:(x[1]))
         for l, n in cur_room_list:
             write(f"{l} {n}\n")
 
