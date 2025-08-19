@@ -35,7 +35,7 @@ def bfs(N, K, check):
         if next < 0 or next > MAX:
             continue
         if check[next] > check[loc]:
-            check[next] = check[loc]
+            check[next] = check[loc]    
             queue.append(next)
 
 def main():
