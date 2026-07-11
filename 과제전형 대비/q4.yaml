@@ -1,0 +1,58 @@
+---
+- name: Configure PostgreSQL Read Replica and Update EKS Application
+  hosts: replica_db
+  become: yes
+  vars:
+    master_ip: "10.10.10.50"
+    replica_data_dir: "/var/lib/pgsql/data"
+    eks_namespace: "prod-app"
+
+  tasks:
+    # Task 1: Openstack Replia DB Base Backup
+    - name: Perform base backup from Master replica_db
+      ansible.builtin.command: >
+        pg_basebackup -h {{ master_ip }} -U repuser -D {{ replica_data_dir }} -Fp -Xs -P -R
+      args:
+        creates: "{{ replica_data_dir }}/standby.signal"
+
+    - name: Start PostgreSQL Replica service
+      ansible.builtin.systemd:
+        name: PostgreSQL
+        state: started
+        enabled: yes
+  
+- name: Rolling Update EKS Application via Localhost
+  hosts: Localhost
+  gather_facts: no
+  vars:
+    replica_ip: "10.10.10.51"
+
+  tasks:
+    # Task 2: Update K8s ConfigMap with new Replica IP
+    - name: Patch DB ConfigMap
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: db-config
+            namespace: prod-app
+          data:
+            READ_DB_HOST: "{{ replica_ip }}"
+    
+    # Task 3: Restart Deployment gracefully to apply new ConfigMap
+    - name: Restart Application Deployment
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: web-app
+            namespace: prod-app
+          spec:
+            template:
+              metadata:
+                annotations:
+                  rollme: "{{ ansible_date_time.iso8601 }}"
