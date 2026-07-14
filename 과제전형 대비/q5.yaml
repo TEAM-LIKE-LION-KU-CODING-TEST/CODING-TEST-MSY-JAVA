@@ -1,0 +1,38 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: telemetry-worker
+  namespace: production
+spec:
+  scaleTargetRef:
+    name: telemetry-worker
+
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 2
+  maxReplicaCount: 200
+
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          policies:
+            - type: Percent
+              value: 100
+              periodSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 600
+          policies:
+            - type: Percent
+              value: 25
+              periodSeconds: 60
+
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.ap-northeast-2.amazonaws.com/123456789012/telemetry-queue
+        awsRegion: ap-northeast-2
+        queueLength: "50"
+        activationQueueLength: "5"
+        identityOwner: pod
