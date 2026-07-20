@@ -55,3 +55,13 @@ resource "aws_eks_node_group" "frontend_nodes" {
         "Backend_DB_IP" = openstack_compute_instance_v2.backend_db.access_ip_v4
     }
 }
+
+# OpenStack API 응답 지연으로 인스턴스는 생성되었지만 네트워크 포트 할당이 늦어지면
+# Terraform이 IP를 빈 값으로 AWS 태그에 밀어 넣는 엣지 케이스 방어 : local-exec
+resource "null_resource" "wait_for_db" {
+  depends_on = [openstack_compute_instance_v2.backend_db]
+
+  provisioner "local-exec" {
+    command = "while ! nc -z ${openstack_compute_instance_v2.backend_db.access_ip_v4} 5432; do sleep 5; done"
+  }
+}
