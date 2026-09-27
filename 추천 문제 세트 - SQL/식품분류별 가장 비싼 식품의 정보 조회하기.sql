@@ -1,0 +1,18 @@
+WITH MAX_COST AS (
+    SELECT CATEGORY, MAX(PRICE) AS MP
+    FROM FOOD_PRODUCT
+    WHERE CATEGORY IN ('과자', '국', '김치', '식용유')
+    GROUP BY CATEGORY
+)
+SELECT
+    FP.CATEGORY,
+    MC.MP AS MAX_PRICE,
+    FP.PRODUCT_NAME -- ONLY_FULL_GROUP_BY 위반 방지
+FROM FOOD_PRODUCT FP JOIN MAX_COST MC
+    ON FP.CATEGORY = MC.CATEGORY
+    AND FP.PRICE = MC.MP
+-- 문제에서 명시적으로 언급하지 않았더라도
+-- SQL의 작동 원리와 데이터의 특성상 최대 가격을 가진 상품이 여러 개라면
+-- 모두 출력하는 형태로 작성하는 것이 안전 (GROUP BY 제거)
+---- GROUP BY FP.CATEGORY
+ORDER BY MC.MP DESC;
