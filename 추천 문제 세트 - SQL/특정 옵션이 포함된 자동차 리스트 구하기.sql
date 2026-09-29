@@ -1,0 +1,6 @@
+SELECT CAR_ID, CAR_TYPE, DAILY_FEE, OPTIONS
+FROM CAR_RENTAL_COMPANY_CAR 
+-- ^()$는 오직 한 단어만 찾겠다는 의미
+-- REGEXP '...'은 문자가 포함되어 있으면 모두 찾겠다는 의미
+WHERE OPTIONS REGEXP '네비게이션'
+ORDER BY CAR_ID DESC;
